@@ -8,6 +8,7 @@ let bodyTemplate =
     body []
          [ h1 [] [ Text "Welcome:" ]
            //ol [] (nameList |> List.map (fun x -> li [] [ Text x ]))
+           script [ _src "/_framework/aspnetcore-browser-refresh.js" ] []
          ]
 
 let navTemplate =
@@ -19,9 +20,4 @@ let documentTemplate =
             ]
 
 let aboutTemplate =
-    p  [] [Text "About page"]
-
-// let render welcomeUsers =
-//    bodyTemplate welcomeUsers
-//    |> (documentTemplate navTemplate)
-//    |> RenderView.AsString.htmlDocument
+    p [] [Text "About page"]
