@@ -30,5 +30,5 @@ let documentView =
 let aboutView =
     p [] [str "About page"]
 
-let stepInputView =
+let stepInputView = p [] []
     
