@@ -1,10 +1,6 @@
 module Genesys
 
-// open System
-// open Microsoft.AspNetCore
 open Microsoft.AspNetCore.Builder
-// open Microsoft.AspNetCore.Hosting
-// open Microsoft.AspNetCore.Http
 open Microsoft.Extensions.DependencyInjection
 open Microsoft.Extensions.Hosting
 open Giraffe
@@ -19,11 +15,12 @@ let configureApp (appBuilder: IApplicationBuilder) =
               .UseGiraffe( notFoundHandler )
 
 let configureServices (services: IServiceCollection) =
-    services.AddRouting().AddGiraffe() |> ignore
+    services.AddRouting()
+            .AddGiraffe() |> ignore
 
 [<EntryPoint>]
 let main args =
-    let builder = WebApplication.CreateBuilder(args)
+    let builder = WebApplication.CreateBuilder( args )
     configureServices builder.Services
 
     let app = builder.Build()
@@ -33,5 +30,4 @@ let main args =
 
     configureApp app
     app.Run()
-
     0

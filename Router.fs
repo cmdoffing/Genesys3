@@ -3,7 +3,7 @@
 open Microsoft.AspNetCore.Http
 open Giraffe
 open Giraffe.EndpointRouting
-open WelcomeUsers
+open MasterTemplates
 
 let handler1: HttpHandler =
     fun (_: HttpFunc) (ctx: HttpContext) ->
