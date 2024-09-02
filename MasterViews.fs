@@ -1,31 +1,34 @@
-﻿module MasterTemplates
+﻿module MasterViews
 
 open Giraffe.ViewEngine
 
-let navTemplate =
+let navView =
     nav [] 
         [ a [ _href "/About" ] [str "About"] ]
 
-let bodyTemplate =
+let bodyView =
     let namelist = ["Mike"; "Yana"; "Carolyn"; "Scott"] 
     body []
-         [ 
-           navTemplate
+         [
+           navView
            h1 [] [str "Welcome:"]
            ol [] (namelist 
                   |> List.map (fun x -> li [] [ Text x ]))
            script [ _src "/_framework/aspnetcore-browser-refresh.js" ] []
          ]
 
-let headTemplate =
+let headView =
     head [] [ title [] [str "Genesys"] ]
 
-let documentTemplate =
+let documentView =
     html [_lang "en-US"]
          [  
-           headTemplate
-           bodyTemplate
+           headView
+           bodyView
          ]
 
-let aboutTemplate =
+let aboutView =
     p [] [str "About page"]
+
+let stepInputView =
+    

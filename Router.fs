@@ -3,7 +3,7 @@
 open Microsoft.AspNetCore.Http
 open Giraffe
 open Giraffe.EndpointRouting
-open MasterTemplates
+open MasterViews
 
 let handler1: HttpHandler =
     fun (_: HttpFunc) (ctx: HttpContext) ->
@@ -20,8 +20,8 @@ let handler3 (a: string, b: string, c: string, d: int) : HttpHandler =
 
 let endpoints = [
       GET   
-          [ route  "/"            (htmlView documentTemplate)
-            route  "/about"       (htmlView aboutTemplate)
+          [ route  "/"            (htmlView documentView)
+            route  "/about"       (htmlView aboutView)
             routef "/%s/%i"       handler2
             routef "/%s/%s/%s/%i" handler3 
           ]
