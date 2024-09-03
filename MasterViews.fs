@@ -1,24 +1,24 @@
 ﻿module MasterViews
 
 open Giraffe.ViewEngine
+open Step.Models
+open Step.Views
 
 let navView =
     nav [] 
-        [ a [ _href "/About" ] [str "About"] ]
+        [ a [ _href "/About" ] [Text "About"] ]
 
 let bodyView =
-    let namelist = ["Mike"; "Yana"; "Carolyn"; "Scott"] 
     body []
          [
-           navView
-           h1 [] [str "Welcome:"]
-           ol [] (namelist 
-                  |> List.map (fun x -> li [] [ Text x ]))
-           script [ _src "/_framework/aspnetcore-browser-refresh.js" ] []
+            navView
+            h1 [] [Text "Welcome:"]
+            stepInputView stepInput
+            script [ _src "/_framework/aspnetcore-browser-refresh.js" ] []
          ]
 
 let headView =
-    head [] [ title [] [str "Genesys"] ]
+    head [] [ title [] [Text "Genesys"] ]
 
 let documentView =
     html [_lang "en-US"]
@@ -28,7 +28,5 @@ let documentView =
          ]
 
 let aboutView =
-    p [] [str "About page"]
-
-let stepInputView = p [] []
+    p [] [Text "About page"]
     

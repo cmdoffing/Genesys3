@@ -25,6 +25,10 @@ let endpoints = [
             routef "/%s/%i"       handler2
             routef "/%s/%s/%s/%i" handler3 
           ]
+      POST
+          [
+            route "/" (htmlView documentView)
+          ]
       GET_HEAD
           [ route "/foo" (text "Bar")
             route "/x"   (text "y")

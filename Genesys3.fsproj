@@ -6,6 +6,8 @@
 
   <ItemGroup>
     <Compile Include="Step.Types.fs" />
+    <Compile Include="Step.Models.fs" />
+    <Compile Include="Step.Views.fs" />
     <Compile Include="MasterViews.fs" />
     <Compile Include="Router.fs" />
     <Compile Include="Program.fs" />
