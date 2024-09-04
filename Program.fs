@@ -25,7 +25,7 @@ let main args =
 
     let app = builder.Build()
 
-    if app.Environment.IsDevelopment() then
+    if  app.Environment.IsDevelopment() then
         app.UseDeveloperExceptionPage() |> ignore
 
     configureApp app

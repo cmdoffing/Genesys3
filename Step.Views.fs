@@ -13,7 +13,7 @@ let formCss = """
 
 let stepInputView (stepInput: StepInput) =
     div [] [
-        form [_class formCss; _method "post"; _action ""] [
+        form [_class formCss; _method "post"; _action "/submitStepInput"] [
             p [] [
                 label [_for "StepInputName"] [Text "Step Name: "]
                 input [_id  "StepInputName"; _name "StepInputName"]
