@@ -4,7 +4,7 @@
 
 //type Doc = Doc of string
 
-[<CLIMutable>]
+// [<CLIMutable>]
 type StepInput = {
     StepInputName : string
     StepInputDoc  : string

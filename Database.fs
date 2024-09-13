@@ -28,3 +28,34 @@ let domainNameSeq =
 let domainName = sprintf "%A" domainNameSeq
 
 *)
+
+(*
+open Dapper.FSharp.MSSQL
+open Step.Types
+
+let [<Literal>] connString = "Server=localhost;Database=Genesys;Integrated Security=sspi"
+
+let getConnection () =
+    new Microsoft.Data.SqlClient.SqlConnection( connString )
+
+let conn = getConnection ()
+
+type Domain = {
+    DomainId      : int64
+    ContextId     : int64
+    DomainName    : string
+    DomainDoc     : string
+    DomainDeleted : bool
+}
+
+let domainTable = table<Domain> |> inSchema "dbo"
+
+let domains = select {
+    for d in domainTable do
+        where (d.DomainId = 1 )
+} 
+// |> conn.SelectAsync<Domain>
+
+let domainsText = sprintf "domainsText = %A" domains
+*)
+

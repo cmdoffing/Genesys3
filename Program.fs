@@ -5,14 +5,13 @@ open Microsoft.Extensions.DependencyInjection
 open Microsoft.Extensions.Hosting
 open Giraffe
 open Giraffe.EndpointRouting
-open Router
 
 let notFoundHandler = RequestErrors.notFound (text "Not Found") 
 
 let configureApp (appBuilder: IApplicationBuilder) =
     appBuilder.UseRouting()
-              .UseGiraffe( endpoints )
-              .UseGiraffe( notFoundHandler )
+              .UseGiraffe( Router.endpoints )
+              .UseGiraffe( notFoundHandler  )
 
 let configureServices (services: IServiceCollection) =
     services.AddRouting()
@@ -20,13 +19,16 @@ let configureServices (services: IServiceCollection) =
 
 [<EntryPoint>]
 let main args =
+    // Allow Option.None to be substituted for null in Dapper.FSharp MSSQL
+    Dapper.FSharp.MSSQL.OptionTypes.register()
+
     let builder = WebApplication.CreateBuilder( args )
     configureServices builder.Services
 
     let app = builder.Build()
 
-    if  app.Environment.IsDevelopment() then
-        app.UseDeveloperExceptionPage() |> ignore
+    if   app.Environment.IsDevelopment()
+    then app.UseDeveloperExceptionPage() |> ignore
 
     configureApp app
     app.Run()
