@@ -19,9 +19,6 @@ let configureServices (services: IServiceCollection) =
 
 [<EntryPoint>]
 let main args =
-    // Allow Option.None to be substituted for null in Dapper.FSharp MSSQL
-    Dapper.FSharp.MSSQL.OptionTypes.register()
-
     let builder = WebApplication.CreateBuilder( args )
     configureServices builder.Services
 
