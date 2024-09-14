@@ -27,7 +27,7 @@ let endpoints = [
       GET [
           route  "/"       (htmlView documentView)
           route  "/about"  (htmlView aboutView)
-          route  "/domain" (text Database.domainsText)
+          route  "/domain" (text Database.domainString)
       ]
       POST [
           route "/"                (htmlView documentView)

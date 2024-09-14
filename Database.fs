@@ -59,3 +59,31 @@ let domains = select {
 let domainsText = sprintf "domainsText = %A" domains
 *)
 
+open FSharp.Data
+
+type Domain = {
+    DomainId      : int64
+    ContextId     : int64
+    DomainName    : string
+    DomainDoc     : string
+    DomainDeleted : bool
+}
+
+let [<Literal>] connString = "Server=localhost;Database=Genesys;Integrated Security=sspi"
+
+type DomainProvider = SqlCommandProvider<" SELECT * FROM Domain", connString>
+
+let cmd: DomainProvider = new DomainProvider( connString )
+type DomainT = DomainProvider
+let domain = cmd.Execute() |> Seq.head
+
+let dom: Domain = { 
+                    DomainId      = domain.DomainId
+                    ContextId     = domain.ContextId
+                    DomainName    = domain.DomainName
+                    DomainDoc     = domain.DomainDoc
+                    DomainDeleted = domain.DomainDeleted
+                  }
+
+
+let domainString = sprintf "%A" domain.DomainDoc
