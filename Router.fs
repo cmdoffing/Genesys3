@@ -8,25 +8,26 @@ open MasterViews
 open Step.Types
 
 let handler1: HttpHandler =
-    fun (_: HttpFunc) (ctx: HttpContext) ->
-        ctx.WriteTextAsync "Hello World"
+    fun (next: HttpFunc) (ctx: HttpContext) ->
+       // ctx.WriteTextAsync "Hello World"
+       RequestErrors.BAD_REQUEST "URL route not found" next ctx
+       
 
 let submitStepInput : HttpHandler =
     fun (next : HttpFunc) (ctx : HttpContext) ->
         task {
-            // Binds a form payload to a StepInput object with CultureInfo
+            // Bind a form payload to a StepInput object with CultureInfo
             let  culture   = CultureInfo.CreateSpecificCulture( "en-US" )
             let! stepInput = ctx.BindFormAsync<StepInput>( culture )
-            let returnStr  = $"stepInputName is {stepInput.StepInputName} and Doc is {stepInput.StepInputDoc}"
-
-            // Sends the object back to the client
-            return! ctx.WriteStringAsync returnStr
+            let  returnStr = $"stepInputName is {stepInput.StepInputName} and Doc is {stepInput.StepInputDoc}"
+            return! ctx.WriteStringAsync returnStr   // Sends the object back to the client
         }
 
 let endpoints = [
       GET [
-          route  "/"      (htmlView documentView)
-          route  "/about" (htmlView aboutView)
+          route  "/"       (htmlView documentView)
+          route  "/about"  (htmlView aboutView)
+          route  "/domain" (text Database.domainString)
       ]
       POST [
           route "/"                (htmlView documentView)

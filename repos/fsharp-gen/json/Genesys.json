@@ -1,0 +1,217 @@
+{
+    "Domain": {
+        "Id": 12340,
+        "Name": "Order-Fullfillment",
+        "Contexts": [
+            {
+                "Name": "Order-taking",
+                "Workflows": [
+                  {
+                    "Name": "PlaceOrder",
+                    "TriggeredBy": "Order form received event (when Quote is not checked)",
+                    "Inputs": [
+                      "Order form",
+                      "Product catalog"
+                    ],
+                    "Output-events": [
+                      "'Order placed' event"
+                    ],
+                    "Side-effects": [
+                      {
+                        "Id": 111223,
+                        "Desc": [ "An acknowledgement is sent to the customer, along with the placed order" ]
+                      }
+                    ],
+                    "Data": [
+                      {
+                        "Name": "UnvalidatedOrder",
+                        "Desc": [ "An unvalidated customer order." ],
+                        "Type": "Entity",
+                        "Items": [
+                          "UnvalidatedCustomerInfo",
+                          "UnvalidatedShippingAddress",
+                          "UnvalidatedBillingAddress",
+                          "list of UnvalidatedOrderLine"
+                        ]
+                      },
+                      {
+                        "Name": "ValidatedOrder",
+                        "Desc": [ "An unvalidated customer order." ],
+                        "Type": "Entity",
+                        "Items": [
+                          "ValidatedCustomerInfo",
+                          "ValidatedShippingAddress",
+                          "ValidatedBillingAddress",
+                          "list of ValidatedOrderLine"
+                        ]
+                      },
+                      {
+                        "Name": "Order",
+                        "Desc": [ "A customer order." ],
+                        "Type": "Entity",
+                        "Items": [
+                          "CustomerInfo",
+                          "ShippingAddress",
+                          "BillingAddress",
+                          "list of OrderLine",
+                          "AmountToBill"
+                        ]
+                      },
+                      {
+                        "Name": "PricedOrder",
+                        "Desc": [ "A customer order with all prices assigned." ],
+                        "Type": "Entity",
+                        "Items": [
+                          "ValidatedCustomerInfo",
+                          "ValidatedShippingAddress",
+                          "ValidatedBillingAddress",
+                          "list of PricedOrderLine",
+                          "AmountToBill"
+                        ]
+                      },
+                      {
+                        "Name": "PlacedOrderAcknowledgement",
+                        "Desc": [ "An acknowledgement letter to be sent when an order has been placed" ],
+                        "Type": "Entity",
+                        "Items": [
+                          "PricedOrder",
+                          "AcknowledgementLetter"
+                        ]
+                      },
+                      {
+                        "Name": "OrderLine",
+                        "Desc": [ "A line item in an order." ],
+                        "Type": "Entity",
+                        "Items": [
+                          "Product",
+                          "Quantity",
+                          "Price"
+                        ]
+                      },
+                      {
+                        "Name": "PricedOrderLine",
+                        "Desc": [ "A line item in an order with an associated price." ],
+                        "Type": "Entity",
+                        "Items": [
+                          "ValidatedOrderLine",
+                          "LinePrice"
+                        ]
+                      },
+                      {
+                        "Name": "UnvalidatedOrderLine",
+                        "Desc": [ "An unvalidated line item in an order." ],
+                        "Type": "Entity",
+                        "Items": [
+                          "UnvalidatedProduct",
+                          "UnvalidatedQuantity"
+                        ]
+                      },
+                      {
+                        "Name": "ValidatedOrderLine",
+                        "Desc": [ "An validated line item in an order." ],
+                        "Type": "Entity",
+                        "Items": [
+                          "ValidatedProduct",
+                          "ValidatedQuantity"
+                        ]
+                      },
+                      {
+                        "Name": "WidgetCode",
+                        "Desc": [ "String starting with 'W' followed by four digits." ],
+                        "Type": "String"
+                      },
+                      {
+                        "Name": "GizmoCode",
+                        "Desc": [ "String starting with 'G' followed by three digits." ],
+                        "Type": "String"
+                      },
+                      {
+                        "Name": "ProductCode",
+                        "Desc": [ "A code that uniquely identifies the product." ],
+                        "Type": "Cases",
+                        "Cases": [ "WidgetCode", "GizmoCode" ]
+                      },
+                      {
+                        "Name": "OrderQuantity",
+                        "Desc": [ "The amount of the product ordered." ],
+                        "Type": "Cases",
+                        "Cases": [ "UnitQuantity", "KilogramQuantity" ]
+                      },
+                      {
+                        "Name": "UnitQuantity",
+                        "Desc": [
+                          "The amount of the product ordered in integer units.",
+                          "Integer between 1 and 1000",
+                          "The largest number of units allowed is 1000."
+                        ],
+                        "Type": "Integer"
+                      },
+                      {
+                        "Name": "KilogramQuantity",
+                        "Desc": [
+                          "The amount of the product ordered, measured in kilograms.",
+                          "Decimal between 0.05 and 100.0."
+                        ],
+                        "Type": "Decimal"
+                      }
+                    ],
+                    "Steps": [
+                      {
+                        "Name": "ValidateOrder",
+                        "Desc": [
+                          "Validate the customer name",
+                          "Check that the shipping and billing address exist",
+                          "for each line:",
+                          "    check product code syntax",
+                          "    check that product code exists in the ProductCatalog",
+                          " ",
+                          "If order is invalid then:",
+                          "    add invalid order to pile",
+                          "    stop",
+                          "If everything is OK:",
+                          "    return ValidatedOrder",
+                          "else:",
+                          "    return ValidationError"
+                        ],
+                        "Inputs": [
+                          "UnvalidatedOrder"
+                        ],
+                        "SuccessOutputs": [ "ValidatedOrder" ],
+                        "ErrorOutputs": [ "ValidationError" ],
+                        "Dependencies": [
+                          "CheckProductCodeExists",
+                          "CheckAddressExists"
+                        ]
+                      },
+                      {
+                        "Name": "PriceOrder",
+                        "Inputs": [ "ValidatedOrder" ],
+                        "Outputs": [ "PricedOrder" ],
+                        "Dependencies": [ "GetProductPrice" ],
+                        "Desc": [
+                          "For each line:",
+                          "    get the price for the product",
+                          "    set the price for the line",
+                          "set the amount to bill (= sum of line prices)"
+                        ]
+                      },
+                      {
+                        "Name": "SendAcknowledgementToCustomer",
+                        "Inputs": [ "PricedOrder" ],
+                        "SuccessOutputs": [ "AcknowledgmentLetter" ],
+                        "Desc": [
+                          "Create acknowledgement letter and send it",
+                          "and the priced order to the customer"
+                        ]
+                      },
+                      {
+                        "Name": "ReturnOrderPlacedEvent",
+                        "Desc": [ "Return OrderPlaced event (if no errors)" ]
+                      }
+                    ]
+                  }
+                ]
+            }
+        ]
+    }
+}

@@ -1,18 +1,19 @@
 ﻿module Step.Types
 
-//type Name = Name of string
+type Name = Name of string
 
-//type Doc = Doc of string
+type Doc = Doc of string
 
-// [<CLIMutable>]
-type StepInput = {
-    StepInputName : string
-    StepInputDoc  : string
+type Input = {
+    Name : Name
+    Doc  : Doc
 }
 
-type StepOutput = {
-    StepOutputName : string
-    StepOutputDoc  : string
+type Inputs = Inputs of Input list
+
+type Output = {
+    Name : Name
+    Doc  : Doc
 }
 
 type Transform = Transform of string
@@ -40,8 +41,8 @@ type Validation = Validation of string
 type DefaultValue = DefaultValue of string
 
 type Field = {
-    FieldName    : string
-    FieldDoc     : string
+    Name         : Name
+    Doc          : Doc
     FieldType    : FieldType
     Validations  : Validation list
     Regex        : System.Text.RegularExpressions.Regex option
@@ -49,10 +50,10 @@ type Field = {
 }
 
 type Step = {
-    StepName      : string
-    StepDoc       : string
-    StepInputs    : StepInput list
-    Output        : StepOutput
+    Name          : Name
+    Doc           : Doc
+    Inputs        : Input list
+    Output        : Output
     Transforms    : Transform list
     Route         : Route  option
     HttpHeaderFunction: HttpHeaderFunction option
@@ -63,8 +64,7 @@ type Step = {
 }
 
 type Workflow = {
-    WorkflowName : string
-    WorkflowDoc  : string
-    Steps        : Step list
+    Name : Name
+    Doc  : Doc
+    Steps: Step list
 }
-
