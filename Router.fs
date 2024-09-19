@@ -3,9 +3,11 @@
 open System.Globalization
 open Microsoft.AspNetCore.Http
 open Giraffe
+open Giraffe.ViewEngine
 open Giraffe.EndpointRouting
 open MasterViews
 open Step.Types
+open Domain
 
 let handler1: HttpHandler =
     fun (next: HttpFunc) (ctx: HttpContext) ->
@@ -25,12 +27,13 @@ let submitStepInput : HttpHandler =
 
 let endpoints = [
       GET [
-          route  "/"       (htmlView documentView)
+          route  "/"       (htmlView (documentView (Text "Main page")))
           route  "/about"  (htmlView aboutView)
           route  "/domain" (text Database.domainString)
+          route  "/domains" (htmlView domainsPage)
       ]
       POST [
-          route "/"                (htmlView documentView)
+          route "/"                (htmlView (documentView (Text "Main page posted")))
           route "/submitStepInput" submitStepInput
       ]
 
