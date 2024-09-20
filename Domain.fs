@@ -40,7 +40,7 @@ let private domains = [
 ]
 
 //---------------------------------------------------------------------
-//                          Domain Views
+//                              Views
 //---------------------------------------------------------------------
 
 let domainRow domain =
@@ -73,5 +73,4 @@ let domainView =
         domainListview (domainRows domains)
     ]
 
-let domainsPage =
-    MasterViews.documentView domainView
+let domainsPage = MasterViews.documentView domainView
