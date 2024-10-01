@@ -1,6 +1,8 @@
 ﻿module Domain
 
+open Giraffe
 open Giraffe.ViewEngine
+open Giraffe.EndpointRouting
 
 (*
 open Database
@@ -73,4 +75,12 @@ let domainView =
         domainListview (domainRows domains)
     ]
 
-let domainsPage = MasterViews.documentView domainView
+let domainsPage = MasterViews.documentView domainsView
+
+//-----------------------------------------------------------------------
+
+let domainGetEndpoints =
+    GET [
+        route  "/domain"  (text Database.domainString)
+        route  "/domains" (htmlView domainsPage)
+    ]
