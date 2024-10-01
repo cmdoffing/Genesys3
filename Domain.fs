@@ -1,6 +1,22 @@
-﻿module Domain
+module Domain
 
-open Giraffe.ViewEngine
+open Giraffe
+
+[<CLIMutable>]
+type Domain = {
+    DomainId      : int64
+    ContextId     : int64
+    ContextName   : string
+    DomainName    : string
+    DomainDoc     : string
+    DomainDeleted : bool
+}
+
+//---------------------------------------------------------------------
+//                     Database and Data Access
+//---------------------------------------------------------------------
+
+exception DomainDbError of string
 
 (*
 open Database
@@ -13,15 +29,6 @@ let domainPT = new DomainPT( connString )
 let domain   = domainPT.Execute( 1L ) |> Seq.head
 let domainString = sprintf "%A" domain
 *)
-
-type Domain = {
-    DomainId      : int64
-    ContextId     : int64
-    ContextName   : string
-    DomainName    : string
-    DomainDoc     : string
-    DomainDeleted : bool
-}
 
 let private domains = [
     {
@@ -42,15 +49,33 @@ let private domains = [
     }
 ]
 
+let tryGetDomain domainId =
+    List.tryFind (fun d -> domainId = d.DomainId) domains
+
+let getDomain domainId =
+        match tryGetDomain domainId with
+        | Some d -> d
+        | None   -> let msg = sprintf "Domain not found. domainId = %d" domainId
+                    raise (Database.DatabaseError msg)
+
+let private insertDomainIntoDb domain =
+    ignore    // Fix
+
+let updateDomain domain =
+    ignore
+
 //---------------------------------------------------------------------
 //                              Views
 //---------------------------------------------------------------------
+open Giraffe.ViewEngine
+open MasterViews
+open Urls
 
-let private domainRow theDomain =
+let private domainRow domain =
     tr [] [
-        td [] [str theDomain.ContextName]
-        td [] [str theDomain.DomainName]
-        td [] [str theDomain.DomainDoc]
+        td [] [str domain.ContextName]
+        td [] [str domain.DomainName]
+        td [] [str domain.DomainDoc]
     ]
 
 let domainRows theDomains =
@@ -70,72 +95,115 @@ let domainListview domainListRows =
         ]
     ]
 
-
-(*
-let stepInputView (stepInput: StepInput) =
-    div [] [
-        form [_class formCss; _method "post"; _action "/submitStepInput"] [
-            p [] [
-                label [_for "StepInputName"] [Text "Step Name: "]
-                input [_id  "StepInputName"; _name "StepInputName"]
-            ]
-
-            p [] [
-                label [_for "StepInputDoc"] [Text "Step Documentation: "]
-                textarea [_id "StepInputDoc"; _name "StepInputDoc"; _rows "8"; _cols "40";
-                          _placeholder "Describe this field using terms familiar to the user."] []
-            ]
-            button [_type "submit"] [Text "Save"]
-        ]
-
-        p [] [Text "Step input view"]
-        p [] [str stepInput.StepInputName]
-        p [] [str stepInput.StepInputDoc ]
-    ]
-*)
-
-
-let getDomain domainId =
-    List.find (fun d -> d.DomainId = domainId) domains
-
-let domainSaveUrl = "/domain/save"
-
-let maxDocLength       = "2000"     // Must be a string to work with attributes
+let maxDocLength       = "2000"     // Must be a string to be used as an HTML attribute value
 let numDocTextAreaRows = "12"
 let numDocTextAreaCols = "65"
-
-let domainDetailView domainId =
-    let theDomain = getDomain domainId
-
+ 
+let domainNewView =
     div [] [
-        form [_method "post"; _action domainSaveUrl] [
-            fieldset [_disabled] [
+        form [_method "post"; _action domainInsertUrl] [
+            fieldset [] [
+                legend [] [Text "Create New Domain"]
+
+                input [_hidden; _name "DomainId" ;     _value "1"]        // Fix. Set to Guid
+                input [_hidden; _name "ContextId";     _value (string Context.curContextId) ]
+                input [_hidden; _name "DomainDeleted"; _value "false"]    // Fix if necessary
+
+
+                div [] [
+                    label [_for "ContextName"] [Text "Context Name: "]
+                    input [_type "text"; _id "ContextName"; _name "ContextName"; _size "40"]
+                ]
+                div [] [
+                    label [_for "DomainName"] [Text "Domain Name: "]
+                    input [_type "text"; _id "DomainName"; _name "DomainName";
+                           _size "40"; _required]
+                ]
+                div [] [
+                    label [_for "DomainDoc"] [Text "Domain Documentation: "]
+                    textarea [_id "DomainDoc"; _name "DomainDoc"; _maxlength maxDocLength;
+                              _rows numDocTextAreaRows; _cols numDocTextAreaCols]
+                             []
+                ]
+                button [_type "submit"] [Text "Save"]
+            ]
+        ]
+    ]
+
+
+let domainEditView (domain: Domain) =
+    div [] [
+        form [_method "post"; _action domainUpdateUrl] [
+            fieldset [] [
                 legend [] [Text "Domain Detail"]
 
-                input [_type "hidden"; _value (string domainId); _name "DomainId"]
+                input [_type "hidden"; _name "DomainId";  _value (string domain.DomainId)  ]
+                input [_type "hidden"; _name "ContextId"; _value (string domain.ContextId) ]
+
                 div [] [
-                    label [_for "ctxName"] [Text "Context Name: "]
-                    input [_type "text"; _id "ctxName"; _value (string theDomain.ContextName)]
+                    label [_for "ContextName"] [Text "Context Name: "]
+                    br []
+                    input [_type "text"; _id "ContextName"; _name "ContextName";
+                           _value domain.ContextName; _size "40"]
                 ]
                 div [] [
-                    label [_for "domainName"] [Text "Domain Name: "]
-                    input [_type "text"; _id "domainName"; _value theDomain.DomainName]
+                    label [_for "DomainName"] [Text "Domain Name: "]
+                    input [_type "text"; _id "DomainName"; _name "DomainName";
+                           _value domain.DomainName; _size "40"; _required ]
                 ]
                 div [] [
-                    label [_for "domainDoc"] [Text "Domain Documentation: "]
-                    textarea [_id "domainDoc"; _maxlength maxDocLength;
-                              _rows numDocTextAreaRows;_cols numDocTextAreaCols] [
-                        str theDomain.DomainDoc
-                    ]
+                    label [_for "DomainDoc"] [Text "Domain Documentation: "]
+                    textarea [_id "DomainDoc"; _name "DomainDoc"; _maxlength maxDocLength;
+                              _rows numDocTextAreaRows; _cols numDocTextAreaCols]
+                             [ str domain.DomainDoc ]
                 ]
             ]
         ]
     ]
 
-let domainsView =
+let domainIndexView =
     div [] [
         domainListview (domainRows domains)
-        domainDetailView 1L
+        domainEditView domains.Head          // Fix
     ]
 
-let domainsPage = MasterViews.documentView domainsView
+let domainIndexPage = documentView domainIndexView
+let domainNewPage   = documentView domainNewView
+
+//---------------------------------------------------------------------
+//                             Handlers
+//---------------------------------------------------------------------
+open Microsoft.AspNetCore.Http
+open Giraffe.EndpointRouting
+
+let private domainInsertHandler : HttpHandler =
+    fun (next : HttpFunc) (ctx : HttpContext) ->
+        task {
+            let! domain = ctx.BindModelAsync<Domain>()
+            insertDomainIntoDb domain |> ignore
+            //return! Successful.OK (domainEditView domain) next ctx   // Sends the object back to the client
+            let showDomainPage = documentView (domainEditView domain)
+            return! ctx.WriteHtmlViewAsync showDomainPage
+        }
+
+let private domainDeleteHandler domainId =
+    let domain        = getDomain domainId
+    let deletedDomain = { domain with DomainDeleted = true }
+    updateDomain deletedDomain |> ignore
+    redirectTo false domainIndexUrl
+
+//---------------------------------------------------------------------
+//                             Routing
+//---------------------------------------------------------------------
+let domainGetEndpoints =
+    GET [
+        route domainDefaultUrl (redirectTo true domainIndexUrl)
+        route domainIndexUrl   (htmlView domainIndexPage)
+        route domainNewUrl     (htmlView domainNewPage)
+    ]
+
+let domainPostEndpoints =
+    POST [
+        route  domainInsertUrl     domainInsertHandler
+        routef "/domain/delete/%d" domainDeleteHandler
+    ]
