@@ -1,4 +1,4 @@
-﻿module Router
+module Router
 
 open System.Globalization
 open Microsoft.AspNetCore.Http
@@ -35,8 +35,7 @@ let endpoints = [
           route "/submitStepInput" submitStepInput
       ]
       domainGetEndpoints
+      domainPostEndpoints
 
-      // Not specifying a http verb means it will listen to all verbs
-      subRoute "/sub" [ 
-          route "/test" handler1 ] 
-      ]
+      route "/*" (htmlView (documentView (Text "URL not found")))
+]
