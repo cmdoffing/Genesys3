@@ -9,7 +9,9 @@
     <Compile Include="Step.Models.fs" />
     <Compile Include="Database.fs" />
     <Compile Include="Step.Views.fs" />
+    <Compile Include="Urls.fs" />
     <Compile Include="MasterViews.fs" />
+    <Compile Include="Context.fs" />
     <Compile Include="Domain.fs" />
     <Compile Include="Router.fs" />
     <Compile Include="Program.fs" />

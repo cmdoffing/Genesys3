@@ -29,15 +29,13 @@ let endpoints = [
       GET [
           route  "/"       (htmlView (documentView (Text "Main page")))
           route  "/about"  (htmlView aboutView)
-          route  "/domain" (text Database.domainString)
-          route  "/domains" (htmlView domainsPage)
       ]
       POST [
           route "/"                (htmlView (documentView (Text "Main page posted")))
           route "/submitStepInput" submitStepInput
       ]
+      domainGetEndpoints
+      domainPostEndpoints
 
-      // Not specifying a http verb means it will listen to all verbs
-      subRoute "/sub" [ 
-          route "/test" handler1 ] 
-      ]
+      route "/*" (htmlView (documentView (Text "URL not found")))
+]

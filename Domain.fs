@@ -1,6 +1,22 @@
 ﻿module Domain
 
-open Giraffe.ViewEngine
+open Giraffe
+
+[<CLIMutable>]
+type Domain = {
+    DomainId      : int64
+    ContextId     : int64
+    ContextName   : string
+    DomainName    : string
+    DomainDoc     : string
+    DomainDeleted : bool
+}
+
+//---------------------------------------------------------------------
+//                     Database and Data Access
+//---------------------------------------------------------------------
+
+exception DomainDbError of string
 
 (*
 open Database
@@ -14,18 +30,11 @@ let domain   = domainPT.Execute( 1L ) |> Seq.head
 let domainString = sprintf "%A" domain
 *)
 
-type Domain = {
-    DomainId      : int64
-    ContextId     : int64
-    DomainName    : string
-    DomainDoc     : string
-    DomainDeleted : bool
-}
-
 let private domains = [
     {
         DomainId      = 1L
         ContextId     = 1L
+        ContextName   = "Orders"
         DomainName    = "Order fulfillment"
         DomainDoc     = "Order fulfillment docs"
         DomainDeleted = false
@@ -33,25 +42,44 @@ let private domains = [
     {
         DomainId      = 2L
         ContextId     = 1L
+        ContextName   = "Orders"
         DomainName    = "Billing"
         DomainDoc     = "Billing docs"
         DomainDeleted = false
     }
 ]
 
+let tryGetDomain domainId =
+    List.tryFind (fun d -> domainId = d.DomainId) domains
+
+let getDomain domainId =
+        match tryGetDomain domainId with
+        | Some d -> d
+        | None   -> let msg = sprintf "Domain not found. domainId = %d" domainId
+                    raise (Database.DatabaseError msg)
+
+let private insertDomainIntoDb domain =
+    ignore    // Fix
+
+let updateDomain domain =
+    ignore
+
 //---------------------------------------------------------------------
 //                              Views
 //---------------------------------------------------------------------
+open Giraffe.ViewEngine
+open MasterViews
+open Urls
 
-let domainRow domain =
+let private domainRow domain =
     tr [] [
-        td [] [str (string domain.ContextId)]
+        td [] [str domain.ContextName]
         td [] [str domain.DomainName]
         td [] [str domain.DomainDoc]
     ]
 
-let domainRows domains =
-    List.map (fun d -> domainRow d) domains
+let domainRows theDomains =
+    List.map (fun d -> domainRow d) theDomains
 
 let domainListview domainListRows =
     div [] [
@@ -67,10 +95,84 @@ let domainListview domainListRows =
         ]
     ]
 
-let domainView =
+let maxDocLength       = "2000"     // Must be a string to be used as an HTML attribute value
+let numDocTextAreaRows = "12"
+let numDocTextAreaCols = "65"
+ 
+let domainNewView =
     div [] [
-        //p [] [ Text "Domain Id: "; Text (string theDomain.DomainId)
-        domainListview (domainRows domains)
+        form [_method "post"; _action domainInsertUrl] [
+            fieldset [] [
+                legend [] [Text "Create New Domain"]
+
+                input [_hidden; _name "DomainId" ;     _value "1"]        // Fix. Set to Guid
+                input [_hidden; _name "ContextId";     _value (string Context.curContextId) ]
+                input [_hidden; _name "DomainDeleted"; _value "false"]    // Fix if necessary
+
+
+                div [] [
+                    label [_for "ContextName"] [Text "Context Name: "]
+                    input [_type "text"; _id "ContextName"; _name "ContextName"; _size "40"]
+                ]
+                div [] [
+                    label [_for "DomainName"] [Text "Domain Name: "]
+                    input [_type "text"; _id "DomainName"; _name "DomainName";
+                           _size "40"; _required]
+                ]
+                div [] [
+                    label [_for "DomainDoc"] [Text "Domain Documentation: "]
+                    textarea [_id "DomainDoc"; _name "DomainDoc"; _maxlength maxDocLength;
+                              _rows numDocTextAreaRows; _cols numDocTextAreaCols]
+                             []
+                ]
+                button [_type "submit"] [Text "Save"]
+            ]
+        ]
     ]
 
-let domainsPage = MasterViews.documentView domainView
+
+let domainEditView (domain: Domain) =
+    div [] [
+        form [_method "post"; _action domainUpdateUrl] [
+            fieldset [] [
+                legend [] [Text "Domain Detail"]
+
+                input [_type "hidden"; _name "DomainId";  _value (string domain.DomainId)  ]
+                input [_type "hidden"; _name "ContextId"; _value (string domain.ContextId) ]
+
+                div [] [
+                    label [_for "ContextName"] [Text "Context Name: "]
+                    br []
+                    input [_type "text"; _id "ContextName"; _name "ContextName";
+                           _value domain.ContextName; _size "40"]
+                ]
+                div [] [
+                    label [_for "DomainName"] [Text "Domain Name: "]
+                    input [_type "text"; _id "DomainName"; _name "DomainName";
+                           _value domain.DomainName; _size "40"; _required ]
+                ]
+                div [] [
+                    label [_for "DomainDoc"] [Text "Domain Documentation: "]
+                    textarea [_id "DomainDoc"; _name "DomainDoc"; _maxlength maxDocLength;
+                              _rows numDocTextAreaRows; _cols numDocTextAreaCols]
+                             [ str domain.DomainDoc ]
+                ]
+            ]
+        ]
+    ]
+
+let domainIndexView =
+    div [] [
+        domainListview (domainRows domains)
+        domainEditView domains.Head          // Fix
+    ]
+
+let domainsPage = MasterViews.documentView domainsView
+
+//-----------------------------------------------------------------------
+
+let domainGetEndpoints =
+    GET [
+        route  "/domain"  (text Database.domainString)
+        route  "/domains" (htmlView domainsPage)
+    ]

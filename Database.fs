@@ -2,6 +2,8 @@
 
 open FSharp.Data
 
+exception DatabaseError of string
+
 let [<Literal>] connString = "Server=localhost;Database=Genesys;Integrated Security=sspi"
 
 type DomainPT = SqlCommandProvider< "SELECT * FROM Domain", connString>
