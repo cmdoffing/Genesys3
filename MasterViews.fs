@@ -3,6 +3,26 @@
 open Giraffe.ViewEngine
 open Urls
 
+let formCss = """
+        form  { display: table;      }
+        p     { display: table-row;  }
+        label { display: table-cell; }
+        input { display: table-cell; }
+
+        fieldset {
+            border: 2px solid black;
+            padding: 10px;
+            background-color: #f9f9f9;
+            margin: 8px;    
+            border-radius: 4px;
+        }
+
+        legend {
+            font-weight : bold;
+            padding     : 2px;
+        }
+    """
+
 let navView =
     nav [] [
         a [ _href "/About" ] [Text "About"]

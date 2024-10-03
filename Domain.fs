@@ -1,4 +1,4 @@
-﻿module Domain
+module Domain
 
 open Giraffe
 
@@ -167,12 +167,43 @@ let domainIndexView =
         domainEditView domains.Head          // Fix
     ]
 
-let domainsPage = MasterViews.documentView domainsView
+let domainIndexPage = documentView domainIndexView
+let domainNewPage   = documentView domainNewView
 
-//-----------------------------------------------------------------------
+//---------------------------------------------------------------------
+//                             Handlers
+//---------------------------------------------------------------------
+open Microsoft.AspNetCore.Http
+open Giraffe.EndpointRouting
 
+let private domainInsertHandler : HttpHandler =
+    fun (next : HttpFunc) (ctx : HttpContext) ->
+        task {
+            let! domain = ctx.BindModelAsync<Domain>()
+            insertDomainIntoDb domain |> ignore
+            //return! Successful.OK (domainEditView domain) next ctx   // Sends the object back to the client
+            let showDomainPage = documentView (domainEditView domain)
+            return! ctx.WriteHtmlViewAsync showDomainPage
+        }
+
+let private domainDeleteHandler domainId =
+    let domain        = getDomain domainId
+    let deletedDomain = { domain with DomainDeleted = true }
+    updateDomain deletedDomain |> ignore
+    redirectTo false domainIndexUrl
+
+//---------------------------------------------------------------------
+//                             Routing
+//---------------------------------------------------------------------
 let domainGetEndpoints =
     GET [
-        route  "/domain"  (text Database.domainString)
-        route  "/domains" (htmlView domainsPage)
+        route domainDefaultUrl (redirectTo true domainIndexUrl)
+        route domainIndexUrl   (htmlView domainIndexPage)
+        route domainNewUrl     (htmlView domainNewPage)
+    ]
+
+let domainPostEndpoints =
+    POST [
+        route  domainInsertUrl     domainInsertHandler
+        routef "/domain/delete/%d" domainDeleteHandler
     ]

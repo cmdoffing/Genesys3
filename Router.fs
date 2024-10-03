@@ -1,4 +1,4 @@
-﻿module Router
+module Router
 
 open System.Globalization
 open Microsoft.AspNetCore.Http
