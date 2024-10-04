@@ -8,6 +8,7 @@ open Giraffe.EndpointRouting
 open MasterViews
 open Step.Types
 open Domain
+open Urls
 
 let handler1: HttpHandler =
     fun (next: HttpFunc) (ctx: HttpContext) ->
@@ -27,8 +28,8 @@ let submitStepInput : HttpHandler =
 
 let endpoints = [
       GET [
-          route  "/"       (htmlView (documentView (Text "Main page")))
-          route  "/about"  (htmlView aboutView)
+          route mainPageUrl (htmlView mainPage)
+          route aboutUrl    (htmlView aboutPage)
       ]
       POST [
           route "/"                (htmlView (documentView (Text "Main page posted")))

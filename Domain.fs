@@ -83,7 +83,7 @@ let domainRows theDomains =
 
 let domainListview domainListRows =
     div [] [
-        table [ _class "table table-hover" ] [
+        table [ _class "table table-hover table-bordered" ] [
             thead [] [
                 tr [] [
                     th [ _scope "col" ] [Text "Context" ]
@@ -132,7 +132,7 @@ let domainNewView =
 
 
 let domainEditView (domain: Domain) =
-    div [] [
+    div [_class ""] [
         form [_method "post"; _action domainUpdateUrl] [
             fieldset [] [
                 legend [] [Text "Domain Detail"]
@@ -140,18 +140,18 @@ let domainEditView (domain: Domain) =
                 input [_type "hidden"; _name "DomainId";  _value (string domain.DomainId)  ]
                 input [_type "hidden"; _name "ContextId"; _value (string domain.ContextId) ]
 
-                div [] [
+                div [_class "mb-3"] [
                     label [_for "ContextName"] [Text "Context Name: "]
                     br []
                     input [_type "text"; _id "ContextName"; _name "ContextName";
                            _value domain.ContextName; _size "40"]
                 ]
-                div [] [
+                div [_class "mb-3"] [
                     label [_for "DomainName"] [Text "Domain Name: "]
                     input [_type "text"; _id "DomainName"; _name "DomainName";
                            _value domain.DomainName; _size "40"; _required ]
                 ]
-                div [] [
+                div [_class "mb-3"] [
                     label [_for "DomainDoc"] [Text "Domain Documentation: "]
                     textarea [_id "DomainDoc"; _name "DomainDoc"; _maxlength maxDocLength;
                               _rows numDocTextAreaRows; _cols numDocTextAreaCols]

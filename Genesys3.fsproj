@@ -5,6 +5,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="repos\fsharp-gen\**" />
+    <Content Remove="repos\Giraffe.Razor\**" />
+    <Content Remove="repos\Tutorial1\**" />
+    <EmbeddedResource Remove="repos\fsharp-gen\**" />
+    <EmbeddedResource Remove="repos\Giraffe.Razor\**" />
+    <EmbeddedResource Remove="repos\Tutorial1\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Include="Step.Types.fs" />
     <Compile Include="Step.Models.fs" />
     <Compile Include="Database.fs" />
