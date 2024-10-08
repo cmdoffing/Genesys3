@@ -1,5 +1,8 @@
 ﻿module Urls
 
+let aboutUrl         = "/about"
+let mainPageUrl      = "/"
+
 let domainDefaultUrl = "/domain"
 let domainIndexUrl   = "/domain/index"
 let domainNewUrl     = "/domain/new"
