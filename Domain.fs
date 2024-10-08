@@ -101,31 +101,47 @@ let numDocTextAreaCols = "65"
  
 let domainNewView =
     div [] [
-        form [_method "post"; _action domainInsertUrl] [
-            fieldset [] [
+        form [_method "post"; _class "form-horizontal"; _action domainInsertUrl] [
+            div [_class "form-group"] [
                 legend [] [Text "Create New Domain"]
 
-                input [_hidden; _name "DomainId" ;     _value "1"]        // Fix. Set to Guid
-                input [_hidden; _name "ContextId";     _value (string Context.curContextId) ]
-                input [_hidden; _name "DomainDeleted"; _value "false"]    // Fix if necessary
+                input [_hidden; _name "DomainId" ; _value "1"]        // Fix. Set to Guid
+                input [_hidden; _name "ContextId";
+                       _value (string Context.curContextId)]
+                input [_hidden; _name "DomainDeleted"]    // Fix if necessary
 
-
                 div [] [
-                    label [_for "ContextName"] [Text "Context Name: "]
-                    input [_type "text"; _id "ContextName"; _name "ContextName"; _size "40"]
+                    label [_class "control-label col-sm-2"; _for "ContextName"]
+                          [Text "Context Name"]
+                    div [_class "col-sm-10"] [
+                        input [_type "text"; _class "form-control"; _id "ContextName";
+                               _name "ContextName"; _size "40"; _required]
+                    ]
                 ]
                 div [] [
-                    label [_for "DomainName"] [Text "Domain Name: "]
-                    input [_type "text"; _id "DomainName"; _name "DomainName";
-                           _size "40"; _required]
+                    label [_class "control-label col-sm-2"; _for "DomainName"]
+                          [Text "Domain Name"]
+                    div [_class "col-sm-10"] [
+                        input [_type "text"; _id "DomainName"; _name "DomainName";
+                               _size "40"; _required]
+                    ]
                 ]
                 div [] [
-                    label [_for "DomainDoc"] [Text "Domain Documentation: "]
-                    textarea [_id "DomainDoc"; _name "DomainDoc"; _maxlength maxDocLength;
-                              _rows numDocTextAreaRows; _cols numDocTextAreaCols]
-                             []
+                    label [_class "control-label col-sm-2"; _for "DomainDoc"]
+                          [Text "Domain Documentation"]
+                    div [_class "col-sm-10"] [
+                        textarea [_id "DomainDoc"; _name "DomainDoc";
+                                  _maxlength maxDocLength;
+                                  // _rows numDocTextAreaRows; _cols numDocTextAreaCols
+                                  ] 
+                                  []
+                    ]
                 ]
-                button [_type "submit"] [Text "Save"]
+                div [_class "btn-group"] [
+                    button [_type "submit"; _class "btn btn-primary"] [Text "Save"]
+                    span [] [Text " "]
+                    button [_type "button"; _class "btn btn-default"] [Text "Cancel"]
+                ]
             ]
         ]
     ]
@@ -141,18 +157,20 @@ let domainEditView (domain: Domain) =
                 input [_type "hidden"; _name "ContextId"; _value (string domain.ContextId) ]
 
                 div [_class "mb-3"] [
-                    label [_for "ContextName"] [Text "Context Name: "]
+                    label [_for "ContextName"] [Text "Context Name"]
                     br []
                     input [_type "text"; _id "ContextName"; _name "ContextName";
                            _value domain.ContextName; _size "40"]
                 ]
                 div [_class "mb-3"] [
-                    label [_for "DomainName"] [Text "Domain Name: "]
+                    label [_for "DomainName"] [Text "Domain Name"]
+                    br []
                     input [_type "text"; _id "DomainName"; _name "DomainName";
                            _value domain.DomainName; _size "40"; _required ]
                 ]
                 div [_class "mb-3"] [
-                    label [_for "DomainDoc"] [Text "Domain Documentation: "]
+                    label [_for "DomainDoc"] [Text "Domain Documentation"]
+                    br []
                     textarea [_id "DomainDoc"; _name "DomainDoc"; _maxlength maxDocLength;
                               _rows numDocTextAreaRows; _cols numDocTextAreaCols]
                              [ str domain.DomainDoc ]

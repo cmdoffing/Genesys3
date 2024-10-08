@@ -3,10 +3,10 @@
 open Giraffe.ViewEngine
 open Urls
 
-let aboutText =
+let private aboutText =
     Text """
-            Genesys (GENErating SYStem) is an F# web app that generates 
-            F# / Giraffe / Giraffe.ViewEngine CRUD web apps. The Genesys 
+            Genesys (GENErating SYStem) is an F# ASP>Net Core web application
+            that generates F# / Giraffe / Giraffe.ViewEngine CRUD web apps. The Genesys 
             approach to web app design is guided by Parts 1 and 2 of Scott 
             Wlaschin's book "Domain Modeling Made Functional". Genesys 
             departs greatly from the implementation described in Part 3."""
@@ -24,7 +24,7 @@ let navView =
                 a [_class "navbar-brand"; _href mainPageUrl] [Text "Genesys"]
             ]
             ul [_class "nav navbar-nav"] [
-                li [_class "active"] [ a [_href mainPageUrl] [Text "Home"] ]
+                li [_class ""] [ a [_href mainPageUrl] [Text "Home"] ]
                 li [_class ""] [ a [_href domainIndexUrl; _class ""] [Text "Domains"] ]
                 li [_class ""] [ a [_href domainNewUrl; _class ""]   [Text "New Domain"] ]
                 li [_class ""] [ a [_href aboutUrl; _class ""]       [Text "About"] ]
@@ -37,10 +37,11 @@ let headHtml =
         title [] [Text "Genesys"]
         meta [_charset "utf-8"]
         meta [_name "viewport"; _content "width=device-width, initial-scale=1"]
-        link [_rel         "stylesheet"
+        link [_href        "https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
+              _rel         "stylesheet"
               _crossorigin "anonymous"
-              _href        "https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
         ]
+        script [_src "https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"] []
     ]
 
 let documentView bodyContent =
@@ -51,7 +52,7 @@ let documentView bodyContent =
             bodyContent        
         ]
         script [_src "https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"] []
-        script [_src "https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"] []
+        // script [_src "https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"] []
         script [_src "/_framework/aspnetcore-browser-refresh.js"] []
     ]
 
