@@ -37,11 +37,10 @@ let headHtml =
         title [] [Text "Genesys"]
         meta [_charset "utf-8"]
         meta [_name "viewport"; _content "width=device-width, initial-scale=1"]
-        link [_href        "https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
+        link [_href        "https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
               _rel         "stylesheet"
-              _crossorigin "anonymous"
         ]
-        script [_src "https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"] []
+        script [_src "https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"] []
     ]
 
 let documentView bodyContent =
@@ -49,11 +48,11 @@ let documentView bodyContent =
         headHtml
         body [_class "container"] [
             navView
-            bodyContent        
+            bodyContent
+
+            script [_src "https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"] []
+            script [_src "/_framework/aspnetcore-browser-refresh.js"] []
         ]
-        script [_src "https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"] []
-        // script [_src "https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"] []
-        script [_src "/_framework/aspnetcore-browser-refresh.js"] []
     ]
 
 let aboutPage =
