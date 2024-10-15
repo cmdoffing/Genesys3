@@ -16,7 +16,7 @@ type Domain = {
 //                     Database and Data Access
 //---------------------------------------------------------------------
 
-exception DomainDbError of string
+exception private DomainDbError of string
 
 (*
 open Database
@@ -49,10 +49,10 @@ let private domains = [
     }
 ]
 
-let tryGetDomain domainId =
+let private tryGetDomain domainId =
     List.tryFind (fun d -> domainId = d.DomainId) domains
 
-let getDomain domainId =
+let private getDomain domainId =
         match tryGetDomain domainId with
         | Some d -> d
         | None   -> let msg = sprintf "Domain not found. domainId = %d" domainId
@@ -61,7 +61,7 @@ let getDomain domainId =
 let private insertDomainIntoDb domain =
     ignore    // Fix
 
-let updateDomain domain =
+let private updateDomain domain =
     ignore
 
 //---------------------------------------------------------------------
@@ -78,10 +78,10 @@ let private domainRow domain =
         td [] [str domain.DomainDoc]
     ]
 
-let domainRows theDomains =
+let private domainRows theDomains =
     List.map (fun d -> domainRow d) theDomains
 
-let domainListview domainListRows =
+let private domainListview domainListRows =
     div [] [
         table [_class "table table-hover table-bordered"] [
             thead [] [
@@ -99,7 +99,7 @@ let maxDocLength       = "2000"     // Must be a string to be used as an HTML at
 let numDocTextAreaRows = "6"
 let numDocTextAreaCols = "65"
  
-let domainNewView =
+let private domainNewView =
     div [] [
         form [_method "post"; _action domainInsertUrl] [
                 legend [] [Text "Create New Domain"]
@@ -132,7 +132,7 @@ let domainNewView =
     ]
 
 
-let domainEditView (domain: Domain) =
+let private domainEditView (domain: Domain) =
     div [] [
         form [_method "post"; _action domainUpdateUrl] [
             legend [] [Text "Domain Detail"]
@@ -161,7 +161,7 @@ let domainEditView (domain: Domain) =
         ]
     ]
 
-let domainIndexView =
+let private domainIndexView =
     div [] [
         domainListview (domainRows domains)
         br []
@@ -169,8 +169,8 @@ let domainIndexView =
         domainEditView domains.Head          // Fix
     ]
 
-let domainIndexPage = documentView domainIndexView
-let domainNewPage   = documentView domainNewView
+let private domainIndexPage = documentView domainIndexView
+let private domainNewPage   = documentView domainNewView
 
 //---------------------------------------------------------------------
 //                             Handlers
