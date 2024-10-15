@@ -83,12 +83,12 @@ let domainRows theDomains =
 
 let domainListview domainListRows =
     div [] [
-        table [ _class "table table-hover table-bordered" ] [
+        table [_class "table table-hover table-bordered"] [
             thead [] [
                 tr [] [
-                    th [ _scope "col" ] [Text "Context" ]
-                    th [ _scope "col" ] [Text "Domain Name" ]
-                    th [ _scope "col" ] [Text "Documentation" ]
+                    th [_scope "col" ] [Text "Context"]
+                    th [_scope "col" ] [Text "Domain Name"]
+                    th [_scope "col" ] [Text "Documentation"]
                 ]
             ]
             p [] domainListRows
@@ -96,92 +96,76 @@ let domainListview domainListRows =
     ]
 
 let maxDocLength       = "2000"     // Must be a string to be used as an HTML attribute value
-let numDocTextAreaRows = "12"
+let numDocTextAreaRows = "6"
 let numDocTextAreaCols = "65"
  
 let domainNewView =
     div [] [
-        form [_method "post"; _class "form-horizontal"; _action domainInsertUrl] [
-            div [_class "form-group"] [
+        form [_method "post"; _action domainInsertUrl] [
                 legend [] [Text "Create New Domain"]
-
-                input [_hidden; _name "DomainId" ; _value "1"]        // Fix. Set to Guid
+                input [_hidden; _name "DomainId" ; _value "1"]   // Fix. Set to Guid
                 input [_hidden; _name "ContextId";
                        _value (string Context.curContextId)]
                 input [_hidden; _name "DomainDeleted"]    // Fix if necessary
 
-                div [] [
-                    label [_class "control-label col-sm-2"; _for "ContextName"]
-                          [Text "Context Name"]
-                    div [_class "col-sm-10"] [
-                        input [_type "text"; _class "form-control"; _id "ContextName";
-                               _name "ContextName"; _size "40"; _required]
-                    ]
+                div [_class "mb-3 mt-3"] [
+                    label [_class "form-label"; _for "ContextName"] [Text "Context Name"]
+                    input [_type "text"; _class "form-control"; _id "ContextName";
+                           _name "ContextName"; _size "40"; _required]
                 ]
-                div [] [
-                    label [_class "control-label col-sm-2"; _for "DomainName"]
-                          [Text "Domain Name"]
-                    div [_class "col-sm-10"] [
-                        input [_type "text"; _id "DomainName"; _name "DomainName";
-                               _size "40"; _required]
-                    ]
+                div [_class "mb-3 mt-3"] [
+                    label [_class "form-label"; _for "DomainName"] [Text "Domain Name"]
+                    input [_type "text"; _class "form-control"; _id "DomainName";
+                           _size "40"; _name "DomainName"; _required]
                 ]
-                div [] [
-                    label [_class "control-label col-sm-2"; _for "DomainDoc"]
-                          [Text "Domain Documentation"]
-                    div [_class "col-sm-10"] [
-                        textarea [_id "DomainDoc"; _name "DomainDoc";
-                                  _maxlength maxDocLength;
-                                  // _rows numDocTextAreaRows; _cols numDocTextAreaCols
-                                  ] 
-                                  []
-                    ]
+                div [_class "mb-3 mt-3"] [
+                    label [_class "form-label"; _for "DomainDoc"] [Text "Domain Documentation"]
+                    textarea [_id "DomainDoc"; _name "DomainDoc"; _maxlength maxDocLength;
+                              _class "form-control";
+                              _rows numDocTextAreaRows; _cols numDocTextAreaCols
+                    ] []
                 ]
-                div [_class "btn-group"] [
-                    button [_type "submit"; _class "btn btn-primary"] [Text "Save"]
-                    span [] [Text " "]
-                    button [_type "button"; _class "btn btn-default"] [Text "Cancel"]
-                ]
-            ]
+                button [_type "submit"; _class "btn btn-primary"] [Text "Save"]
+                span [] [Text " "]
+                button [_type "button"; _class "btn btn-default"] [Text "Cancel"]
         ]
     ]
 
 
 let domainEditView (domain: Domain) =
-    div [_class ""] [
+    div [] [
         form [_method "post"; _action domainUpdateUrl] [
-            fieldset [] [
-                legend [] [Text "Domain Detail"]
+            legend [] [Text "Domain Detail"]
+            input [_type "hidden"; _name "DomainId";  _value (string domain.DomainId)  ]
+            input [_type "hidden"; _name "ContextId"; _value (string domain.ContextId) ]
 
-                input [_type "hidden"; _name "DomainId";  _value (string domain.DomainId)  ]
-                input [_type "hidden"; _name "ContextId"; _value (string domain.ContextId) ]
-
-                div [_class "mb-3"] [
-                    label [_for "ContextName"] [Text "Context Name"]
-                    br []
-                    input [_type "text"; _id "ContextName"; _name "ContextName";
-                           _value domain.ContextName; _size "40"]
-                ]
-                div [_class "mb-3"] [
-                    label [_for "DomainName"] [Text "Domain Name"]
-                    br []
-                    input [_type "text"; _id "DomainName"; _name "DomainName";
-                           _value domain.DomainName; _size "40"; _required ]
-                ]
-                div [_class "mb-3"] [
-                    label [_for "DomainDoc"] [Text "Domain Documentation"]
-                    br []
-                    textarea [_id "DomainDoc"; _name "DomainDoc"; _maxlength maxDocLength;
-                              _rows numDocTextAreaRows; _cols numDocTextAreaCols]
-                             [ str domain.DomainDoc ]
-                ]
+            div [_class "mb-3 mt-3"] [
+                label [_for "ContextName"; _class "form-label"] [Text "Context Name"]
+                input [_type "text"; _id "ContextName"; _name "ContextName";
+                        _value domain.ContextName; _size "40"; _class "form-control"]
             ]
+            div [_class "mb-3 mt-3"] [
+                label [_class "form-label"; _for "DomainName"] [Text "Domain Name"]
+                input [_type "text"; _id "DomainName"; _name "DomainName";
+                        _value domain.DomainName; _size "40"; _class "form-control"; _required ]
+            ]
+            div [_class "mb-3"] [
+                label [_class "form-label"; _for "DomainDoc"] [Text "Domain Documentation"]
+                textarea [_class "form-control"; _id "DomainDoc"; _name "DomainDoc";
+                            _maxlength maxDocLength; _rows numDocTextAreaRows]
+                            [str domain.DomainDoc]
+            ]
+            button [_type "submit"; _class "btn btn-primary"] [Text "Save"]
+            span [] [Text " "]
+            button [_type "button"; _class "btn btn-secondary"] [Text "Cancel"]
         ]
     ]
 
 let domainIndexView =
     div [] [
         domainListview (domainRows domains)
+        br []
+        hr []
         domainEditView domains.Head          // Fix
     ]
 
