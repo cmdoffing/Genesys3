@@ -5,11 +5,9 @@ open Urls
 
 let private aboutText =
     Text """
-            Genesys (GENErating SYStem) is an F# ASP.Net Core web application
-            that generates F# / Giraffe / Giraffe.ViewEngine CRUD web apps. The Genesys 
-            approach to web app design is guided by Parts 1 and 2 of Scott 
-            Wlaschin's book "Domain Modeling Made Functional". Genesys 
-            departs greatly from the implementation described in Part 3."""
+             Genesys (GENErating SYStem) is an F# ASP.Net Core web application
+             that manages domain models. Interrupted work in progress.
+         """
 
 let mainPageHtml =
     div [_class "jumbotron"] [
