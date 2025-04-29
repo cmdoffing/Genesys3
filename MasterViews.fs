@@ -10,7 +10,7 @@ let private aboutText =
          """
 
 let mainPageHtml =
-    div [_class "jumbotron"] [
+    div [_class "jumbotron"]  [
         h1 [] [Text "Genesys"]
         p  [] [aboutText]
     ]
