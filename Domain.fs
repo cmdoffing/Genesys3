@@ -99,7 +99,7 @@ let private domainListview domainListRows =
 let maxDocLength       = "2000"
 let numDocTextAreaRows =    "6"
 let numDocTextAreaCols =   "65"
- 
+
 let private domainNewView =
     div [] [
         form [_method "post"; _action domainInsertUrl] [
