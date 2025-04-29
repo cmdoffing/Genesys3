@@ -18,15 +18,14 @@ let configureServices (services: IServiceCollection) =
             .AddGiraffe() |> ignore
 
 [<EntryPoint>]
-let main args =
-    let builder = WebApplication.CreateBuilder( args )
+let main cmdLineParams =
+    let builder = WebApplication.CreateBuilder( cmdLineParams )
     configureServices builder.Services
 
     let app = builder.Build()
-
     if   app.Environment.IsDevelopment()
     then app.UseDeveloperExceptionPage() |> ignore
 
     configureApp app
     app.Run()
-    0
+    exit 0

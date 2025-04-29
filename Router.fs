@@ -16,8 +16,8 @@ let handler1: HttpHandler =
        RequestErrors.BAD_REQUEST "URL route not found" next ctx
        
 
-let submitStepInput : HttpHandler =
-    fun (next : HttpFunc) (ctx : HttpContext) ->
+let submitStepInput: HttpHandler =
+    fun _ (ctx : HttpContext) ->
         task {
             // Bind a form payload to a StepInput object with CultureInfo
             let  culture   = CultureInfo.CreateSpecificCulture( "en-US" )
