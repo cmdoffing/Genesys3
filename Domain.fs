@@ -184,8 +184,8 @@ let private domainInsertHandler : HttpHandler =
             let! domain = ctx.BindModelAsync<Domain>()
             insertDomainIntoDb domain |> ignore
             //return! Successful.OK (domainEditView domain) next ctx   // Sends the object back to the client
-            let showDomainPage = documentView (domainEditView domain)
-            return! ctx.WriteHtmlViewAsync showDomainPage
+            let domainDisplayPage = documentView (domainEditView domain)
+            return! ctx.WriteHtmlViewAsync domainDisplayPage
         }
 
 let private domainDeleteHandler domainId =
