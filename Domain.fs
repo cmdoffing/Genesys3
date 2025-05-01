@@ -183,7 +183,8 @@ let private domainInsertHandler : HttpHandler =
         task {
             let! domain = ctx.BindModelAsync<Domain>()
             insertDomainIntoDb domain |> ignore
-            //return! Successful.OK (domainEditView domain) next ctx   // Sends the object back to the client
+            // Send the object back to the client
+            //return! Successful.OK (domainEditView domain) next ctx
             let domainDisplayPage = documentView (domainEditView domain)
             return! ctx.WriteHtmlViewAsync domainDisplayPage
         }
