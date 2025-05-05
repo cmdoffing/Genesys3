@@ -78,8 +78,8 @@ let private domainRow domain =
         td [] [str domain.DomainDoc]
     ]
 
-let private domainRows theDomains =
-    List.map (fun d -> domainRow d) theDomains
+let private domainRows domains =
+    List.map (fun d -> domainRow d) domains
 
 let private domainListview domainListRows =
     div [] [
@@ -117,12 +117,13 @@ let private domainNewView =
                 div [_class "mb-3 mt-3"] [
                     label [_class "form-label"; _for "DomainName"]  [Text "Domain Name"]
                     input [_type "text"; _class "form-control"; _id "DomainName";
-                           _size "40"; _name "DomainName"; _required]
+                           _size "40";   _name  "DomainName";   _required]
                 ]
                 div [_class "mb-3 mt-3"] [
-                    label [_class "form-label"; _for "DomainDoc"]  [Text "Domain Documentation"]
-                    textarea [_id "DomainDoc"; _name "DomainDoc"; _maxlength maxDocLength;
-                              _class "form-control";
+                    label [_class "form-label"; _for "DomainDoc"]
+                          [Text "Domain Documentation"]
+                    textarea [_id "DomainDoc"; _name "DomainDoc";
+                              _maxlength maxDocLength;  _class "form-control";
                               _rows numDocTextAreaRows; _cols numDocTextAreaCols
                     ] []
                 ]
@@ -137,8 +138,8 @@ let private domainEditView (domain: Domain) =
     div [] [
         form [_method "post"; _action domainUpdateUrl] [
             legend [] [Text "Domain Detail"]
-            input  [_type "hidden"; _name "DomainId";  _value (string domain.DomainId)  ]
-            input  [_type "hidden"; _name "ContextId"; _value (string domain.ContextId) ]
+            input  [_type "hidden"; _name "DomainId";  _value (string domain.DomainId) ]
+            input  [_type "hidden"; _name "ContextId"; _value (string domain.ContextId)]
 
             div [_class "mb-3 mt-3"] [
                 label [_for "ContextName"; _class "form-label"]  [Text "Context Name"]
@@ -148,7 +149,8 @@ let private domainEditView (domain: Domain) =
             div [_class "mb-3 mt-3"] [
                 label [_class "form-label"; _for "DomainName"]  [Text "Domain Name"]
                 input [_type "text"; _id "DomainName"; _name "DomainName";
-                       _value domain.DomainName; _size "40"; _class "form-control"; _required ]
+                       _value domain.DomainName; _size "40";
+                       _class "form-control"; _required]
             ]
             div [_class "mb-3"] [
                 label [_class "form-label"; _for "DomainDoc"]  [Text "Domain Documentation"]
@@ -179,7 +181,7 @@ open Microsoft.AspNetCore.Http
 open Giraffe.EndpointRouting
 
 let private domainInsertHandler : HttpHandler =
-    fun (next : HttpFunc) (ctx : HttpContext) ->
+    fun (next: HttpFunc) (ctx: HttpContext) ->
         task {
             let! domain = ctx.BindModelAsync<Domain>()
             insertDomainIntoDb domain |> ignore
