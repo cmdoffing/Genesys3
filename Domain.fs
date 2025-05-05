@@ -55,7 +55,7 @@ let private tryGetDomain domainId =
 let private getDomain domainId =
         match tryGetDomain domainId with
         | Some d -> d
-        | None   -> let msg = sprintf "Domain not found. domainId = %d" domainId
+        | None   -> let msg = sprintf "Domain not found. domainId = %d{domainId}"
                     raise (Database.DatabaseError msg)
 
 let private insertDomainIntoDb domain =
