@@ -1,11 +1,12 @@
 module Domain
 
+open System.Guid
 open Giraffe
 
 [<CLIMutable>]
 type Domain = {
-    DomainId      : int64   // Fix by setting to Guid
-    ContextId     : int64   // Fix by setting to Guid
+    DomainId      : System.Guid
+    ContextId     : System.Guid
     ContextName   : string
     DomainName    : string
     DomainDoc     : string
@@ -32,16 +33,16 @@ let domainString = sprintf "%A" domain
 
 let private domains = [
     {
-        DomainId      = 1L
-        ContextId     = 1L
+        DomainId      = System.Guid.random()
+        ContextId     = System.Guid.random()
         ContextName   = "Orders"
         DomainName    = "Order fulfillment"
         DomainDoc     = "Order fulfillment docs"
         DomainDeleted = false
     }
     {
-        DomainId      = 2L
-        ContextId     = 1L
+        DomainId      = System.Guid.random()
+        ContextId     = System.Guid.random()
         ContextName   = "Orders"
         DomainName    = "Billing"
         DomainDoc     = "Billing docs"
@@ -180,7 +181,7 @@ let private domainNewPage   = documentView domainNewView
 open Microsoft.AspNetCore.Http
 open Giraffe.EndpointRouting
 
-let private domainInsertHandler : HttpHandler =
+let private domainInsertHandler: HttpHandler =
     fun (next: HttpFunc) (ctx: HttpContext) ->
         task {
             let! domain = ctx.BindModelAsync<Domain>()
