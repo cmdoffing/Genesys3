@@ -22,7 +22,7 @@ let main cmdLineParams =
     let builder = WebApplication.CreateBuilder( cmdLineParams )
     configureServices builder.Services
 
-    let app = builder.Build()
+    let  app = builder.Build()
     if   app.Environment.IsDevelopment()
     then app.UseDeveloperExceptionPage() |> ignore
 
