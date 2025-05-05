@@ -1,6 +1,5 @@
 module Domain
 
-open System.Guid
 open Giraffe
 
 [<CLIMutable>]
