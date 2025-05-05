@@ -1,5 +1,6 @@
 module Domain
 
+open System.Guid
 open Giraffe
 
 [<CLIMutable>]
@@ -32,16 +33,16 @@ let domainString = sprintf "%A" domain
 
 let private domains = [
     {
-        DomainId      = System.Guid.random()
-        ContextId     = System.Guid.random()
+        DomainId      = NewGuid()
+        ContextId     = NewGuid()
         ContextName   = "Orders"
         DomainName    = "Order fulfillment"
         DomainDoc     = "Order fulfillment docs"
         DomainDeleted = false
     }
     {
-        DomainId      = System.Guid.random()
-        ContextId     = System.Guid.random()
+        DomainId      = NewGuid()
+        ContextId     = NewGuid()
         ContextName   = "Orders"
         DomainName    = "Billing"
         DomainDoc     = "Billing docs"
